@@ -1,0 +1,52 @@
+<odoo>
+  <data>
+
+
+    <!-- Menu action for Students submenu -->
+    <record model="ir.actions.act_window" id="students.students_action_window">
+      <field name="name">Students window</field>
+      <field name="res_model">students.students</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+
+
+    <!--  Menu action for Parent submenu -->
+    <record model="ir.actions.act_window" id="students.parents_action_window">
+      <field name="name">Parents window</field>
+      <field name="res_model">students.parent</field>
+      <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+
+
+    <!-- Menu action for Rules submenu  -->
+    <record model="ir.actions.act_window" id="students.rules_action_window">
+      <field name="name">Rules window</field>
+      <field name="res_model">students.rules</field>
+      <field name="view_mode">tree,kanban,form</field>
+    </record>
+
+
+    <!-- -->
+    <menuitem name="Students" id="students.menu_root"/>
+
+
+    <!-- menu categories -->
+    <menuitem name="students" id="students.menu_students" parent="students.menu_root" sequence="81"/>
+    <menuitem name="parents" id="students.menu_parents" parent="students.menu_root" sequence="82" />
+    <menuitem name="rules" id="students.menu_rules" parent="students.menu_root" sequence="83"/>
+
+    <!-- actions -->
+
+    <menuitem name="Students" id="students.submenu_students" parent="students.menu_students"
+              action="students.students_action_window"/>
+
+   <menuitem name="Parent" id="students.submenu_parents" parent="students.menu_parents"
+          action="students.parents_action_window"/>
+
+   <menuitem name="Rules" id="students.submenu_rules" parent="students.menu_rules"
+          action="students.rules_action_window"/>
+
+  </data>
+</odoo>

@@ -1,0 +1,1 @@
+#override :// point-of-sale/static/src/js/model.js

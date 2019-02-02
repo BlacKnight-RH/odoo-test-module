@@ -1,0 +1,286 @@
+<odoo>
+    <data>
+
+
+        <!--
+            Inherit Form View from `product.template` to Modify it
+            = add this items inside the form view of the product `product info or details`
+            = `ref` ===> from `External id` field inside product details form
+         -->
+        <record id="product_template_form_view" model="ir.ui.view">
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <field name="type" position="after">
+                    <field name="calories" />
+                    <field name="servsize" />
+                    <field name="lastupdate" />
+                    <field name="isdietitem" />
+                </field>
+            </field>
+        </record>
+
+
+        <!--
+            Inherit Tree `list` View from `product.template` to Modify it
+            = add this items from outside ... list view of all products
+            = ref ===> from `External id` field from products list `Edit View: List`  #1
+         -->
+        <record id="product_template_tree_view" model="ir.ui.view">
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+
+            <field name="arch" type="xml">
+                <field name="standard_price" position="after">
+                    <field name="calories" />
+                    <field name="servsize" />
+                    <field name="lastupdate" />
+                    <field name="isdietitem" />
+                </field>
+            </field>
+
+        </record>
+
+
+        <!--
+            = this record will create a menu item with name of `Diet Item`
+            = the place of this item will be assigned later in `menuitem` as `parent` attribute
+            = `type`      ===> informs that it'll be an action `or have an action`
+            = `res_model` ===> resource model in which Odoo 'll bring data from
+            = `ref`       ===> see #1
+            = `context`   ===> specify the defaults, e.g default search filter, each element must be prefixed with `default_`
+            = `domain`    ===> specify the default dataset on which the filter 'll be applied
+            == `categ_id.name` = 'our category item' , i just created a category item on-fly with the value `Diet Item` case-sensitive with space
+            == will be filtered based on `name` field of `categ_id`
+        -->
+        <record id="product_template_action_my_module" model="ir.actions.act_window">
+            <field name="name">Diet Item</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+
+            <field name="view_id" ref="product.product_template_tree_view"/>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form</field>
+
+            <field name="context">{"search_default_filter_to_sell":1 , "default_isdietitem": True}</field>
+            <!--<field name="domain">[('isdietitem' ,'=',True)]</field>-->
+            <field name="domain">[('categ_id.name','=','Diet Item')]</field>
+            <field name="help" type="html">
+                <p class="oe.view_nocontent_create">
+                    click here to define new product.
+                </p>
+            </field>
+        </record>
+
+
+        <!--
+            = This Menu Item must have a parent and an action
+            = this `menuitem` will create a menu item and trigger the action record with `action`=`record id`
+            = you can know `parent` field as following :
+            == 1. active developer mode
+            == 2. from `Technical` select `Menu Items`
+            == 3. search for menu name e.g `Sales` and select it
+            == 4. from debugging option `the bug mark at the left of username on top bar` select `View Metadata`
+            == 5. copy the value of `XML ID` and use it
+        -->
+        <menuitem id="menu_product_template_action_my_module"
+                  parent="sale.sale_menu_root"
+                  action="product_template_action_my_module"
+                  sequence="14"/>
+
+
+
+        <!--
+
+        -->
+        <record id="menu_action_my_module" model="ir.actions.act_window">
+            <field name="name">Menus</field>
+            <field name="type">ir.actions.act_window</field>
+
+            <field name="res_model">res.user.meal</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_type">form</field>
+
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Create new menu !!
+              </p>
+            </field>
+        </record>
+
+
+        <!--
+
+        -->
+        <menuitem id="menu_action_my_module_menu"
+                  parent="sale.sale_menu_root"
+                  action="menu_action_my_module"
+                  sequence="15"/>
+
+
+        <!--
+
+        -->
+        <record id="meals_form_view" model="ir.ui.view">
+            <field name="model">res.user.meal</field>
+
+            <field name="view_type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="meal_date"/>
+                        <field name="totalcalories"/>
+                        <field name="user_id"/>
+                        <field name="note"/>
+                    </group>
+
+                    <notebook>
+                        <page name="mealitems" string="Meal Items">
+                            <field name="item_ids" widget="one2many_list">
+                                <tree string="Menu Items" editable="bottom">
+                                    <field name="item_id"/>
+                                    <field name="calories"/>
+                                    <field name="servings"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+
+
+        <!--
+            Inherit Tree `list` View from `res.user.meal` to Modify it
+            = add this items from outside ... list view of all products
+            = ref ===> from `External id` field from products list `Edit View: List`  #1
+         -->
+        <record id="res_user_meal_tree_view" model="ir.ui.view">
+            <field name="model">res.user.meal</field>
+            <field name="view_type">tree</field>
+
+            <field name="arch" type="xml">
+               <tree>
+                    <field name="name" />
+                    <field name="meal_date" />
+                    <field name="user_id" />
+                    <field name="note" />
+                    <field name="totalcalories" sum="Total Calories of all meals" />
+               </tree>
+            </field>
+
+        </record>
+
+
+
+
+
+
+        <!--
+
+         -->
+        <record id="res_user_meal_kanban_view" model="ir.ui.view">
+            <field name="name">Meal Kanban</field>
+            <field name="model">res.user.meal</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_image">
+                                    <img t-att-src="kanban_image('product.product', 'image_small')" alt="Product"/>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                    <div name="tags"/>
+									<strong><span>User: <field name="user_id"/></span></strong>
+									<div name="tags"/>
+									<strong><span>Date: <field name="meal_date"/></span></strong>
+									<div name="tags"/>
+                                    <ul>
+                                        <li><strong>Total Calories: <field name="totalcalories"></field></strong></li>
+                                    </ul>
+                                    <div name="tags"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </data>
+</odoo>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

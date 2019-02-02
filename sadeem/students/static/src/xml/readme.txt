@@ -1,0 +1,1 @@
+#override :// point-of-sale/static/src/xml/pos.xml
