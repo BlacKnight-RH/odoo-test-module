@@ -28,7 +28,7 @@
     </record>
 
 
-    <!-- -->
+    <!-- Parent MenuItem -->
     <menuitem name="Students" id="students.menu_root"/>
 
 
